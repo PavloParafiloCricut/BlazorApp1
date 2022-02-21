@@ -1,0 +1,37 @@
+﻿@page "/"
+@using System.Dynamic
+
+<DataGrid TItem="Employee"
+          Data="@employeeList"
+          @bind-SelectedRow="@selectedEmployee"
+          SelectionMode="DataGridSelectionMode.Multiple"
+          @bind-SelectedRows="selectedEmployees"
+          Responsive
+          RowSelectable="RowSelectableHandler">
+    <DataGridMultiSelectColumn TItem="Employee" Width="30px"></DataGridMultiSelectColumn>
+    <DataGridCommandColumn TItem="Employee" />
+    <DataGridColumn TItem="Employee" Field="@nameof(Employee.Id)" Caption="#" Sortable="false" />
+</DataGrid>
+@code {
+    private List<Employee> employeeList;
+    private Employee selectedEmployee;
+    private List<Employee> selectedEmployees;
+
+    protected override async Task OnInitializedAsync()
+    {
+        employeeList = new List<Employee>() { new Employee() { Id = "1" }, new Employee() { Id = "2" }, new Employee() { Id = "3" } };
+
+        await Task.Delay(300);
+
+        await base.OnInitializedAsync();
+    }
+
+    private bool RowSelectableHandler(RowSelectableEventArgs<Employee> rowSelectableEventArgs)
+        => rowSelectableEventArgs.SelectReason is not DataGridSelectReason.RowClick;
+
+
+    public class Employee
+    {
+        public string Id { get; set; }
+    }
+}
